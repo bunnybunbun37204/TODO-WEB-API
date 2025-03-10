@@ -11,13 +11,13 @@ const mockUsers = [
 
 // Mock activities data
 const mockActivities = [
-  { id: uuidv4(), content: "Went for a morning run", date: "2024-06-10" },
+  { id: 1, content: "Went for a morning run", date: "2024-06-10" },
   {
-    id: uuidv4(),
+    id: 2,
     content: "Completed project presentation",
     date: "2024-06-11",
   },
-  { id: uuidv4(), content: "Read a book about UX design", date: "2024-06-12" },
+  { id: 3, content: "Read a book about UX design", date: "2024-06-12" },
 ];
 
 const app = new Hono();
@@ -58,7 +58,7 @@ app.post("/activities", async (c) => {
     return c.json({ error: "Content and date are required" }, 400);
   }
 
-  const newActivity = { id: uuidv4(), content, date };
+  const newActivity = { id: Math.random()*10, content, date };
   mockActivities.push(newActivity);
 
   return c.json(newActivity, 201);
@@ -70,7 +70,7 @@ app.patch("/activities/:id", async (c) => {
   const id = c.req.param("id");
   const { content, date } = await c.req.json();
 
-  const activity = mockActivities.find((a) => a.id === id);
+  const activity = mockActivities.find((a) => a.id === Number(id));
   if (!activity) {
     return c.json({ error: "Activity not found" }, 404);
   }
