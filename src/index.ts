@@ -19,6 +19,7 @@ const mockActivities = [
   },
   { id: uuidv4(), content: "Read a book about UX design", date: "2024-06-12" },
 ];
+
 const app = new Hono();
 
 // Enable CORS
@@ -64,6 +65,21 @@ app.post("/activities", async (c) => {
 });
 
 app.get("/activities", (c) => c.json(mockActivities));
+
+app.patch("/activities/:id", async (c) => {
+  const id = c.req.param("id");
+  const { content, date } = await c.req.json();
+
+  const activity = mockActivities.find((a) => a.id === id);
+  if (!activity) {
+    return c.json({ error: "Activity not found" }, 404);
+  }
+
+  if (content) activity.content = content;
+  if (date) activity.date = date;
+
+  return c.json(activity);
+});
 
 // Health check
 app.get("/", (c) => c.text("Mock API Server is running!"));
