@@ -9,6 +9,16 @@ const mockUsers = [
   { id: 3, username: "admin", password: "admin123" },
 ];
 
+// Mock activities data
+const mockActivities = [
+  { id: uuidv4(), content: "Went for a morning run", date: "2024-06-10" },
+  {
+    id: uuidv4(),
+    content: "Completed project presentation",
+    date: "2024-06-11",
+  },
+  { id: uuidv4(), content: "Read a book about UX design", date: "2024-06-12" },
+];
 const app = new Hono();
 
 // Enable CORS
@@ -38,6 +48,22 @@ app.post("/tokens", async (c) => {
     token: fakeToken,
   });
 });
+
+// Activities endpoint
+app.post("/activities", async (c) => {
+  const { content, date } = await c.req.json();
+
+  if (!content || !date) {
+    return c.json({ error: "Content and date are required" }, 400);
+  }
+
+  const newActivity = { id: uuidv4(), content, date };
+  mockActivities.push(newActivity);
+
+  return c.json(newActivity, 201);
+});
+
+app.get("/activities", (c) => c.json(mockActivities));
 
 // Health check
 app.get("/", (c) => c.text("Mock API Server is running!"));
