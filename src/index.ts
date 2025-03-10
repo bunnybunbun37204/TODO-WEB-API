@@ -58,7 +58,7 @@ app.post("/activities", async (c) => {
     return c.json({ error: "Content and date are required" }, 400);
   }
 
-  const newActivity = { id: Math.random()*10, content, date };
+  const newActivity = { id: Math.random() * 10, content, date };
   mockActivities.push(newActivity);
 
   return c.json(newActivity, 201);
@@ -79,6 +79,18 @@ app.patch("/activities/:id", async (c) => {
   if (date) activity.date = date;
 
   return c.json(activity);
+});
+
+app.delete("/activities/:id", (c) => {
+  const id = c.req.param("id");
+  const activityIndex = mockActivities.findIndex((a) => a.id === Number(id));
+
+  if (activityIndex === -1) {
+    return c.json({ error: "Activity not found" }, 404);
+  }
+
+  mockActivities.splice(activityIndex, 1);
+  return c.body(null, 204);
 });
 
 // Health check
